@@ -24,25 +24,18 @@ def printBuildFailures():
    for bf in GetBuildFailures():
       print "%s failed: %s" % (bf.node, bf.errstr)
 
-
-#ERASE
-def findQtDir():
-   """ Detect Qt version on the platform. """
-   qtdir = os.environ.get('QT5DIR',None)
-   if qtdir:
-      return qtdir
-   qtdir = os.environ.get('QTDIR',None)
-   if qtdir:
-      return qtdir
-   home = os.environ.get('HOME',None)
+def isWindows():
    if sys.platform.startswith('win'):
-      return 'Q:/Qt/5.5.1'
-   elif sys.platform.startswith('linux'):
-      return "%s/Qt/5.5.1" % home
+      return True
    else:
-      return None
+      return False
 
-   
+def isLinux():
+   if sys.platform.startswith('linux'):
+      return True
+   else:
+      return False  
+
 def findProjectDir(prj, env_vars, search_dirs=''):
    """ 
    Find an external project directory using environment variables and
