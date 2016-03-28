@@ -78,7 +78,7 @@ def setBDBEnv(env, pdir):
    env['BDB_ROOT'] = pdir
    if sys.platform.startswith('win'):
       env['BDB_CPPPATH'] = "%s/lang/cxx/stl %s/build_windows" % (pdir, pdir)
-      env['BDB_LIBPATH'] = "%s/build_windows/Win32/Debug" % pdir
+      env['BDB_LIBPATH'] = "%s/build_windows/Win32/Release" % pdir
    elif sys.platform.startswith('linux'):
       env['BDB_CPPPATH'] = "%s/lang/cxx/stl %s/build_unix" % (pdir, pdir)
       env['BDB_LIBPATH'] = "%s/build_unix" % pdir
@@ -88,8 +88,36 @@ def setTBBEnv(env, pdir):
    """ Set Intel TBB related environment settings in the env. """
    env['TBB_ROOT'] = pdir
    env['TBB_CPPPATH'] = "%s/include" % pdir
-   env['TBB_LIBPATH'] = "%s/lib/ia32/vc11" % pdir
+   if sys.platform.startswith('win'):
+      env['TBB_LIBPATH'] = "%s/lib/ia32/vc11" % pdir
+   elif sys.platform.startswith('linux'):
+      env['TBB_LIBPATH'] = "%s/lib/intel64/gcc4.4" % pdir
 
+   
+def setPythonEnv(env, pdir):
+   """ Set Python related environment settings in the env. """
+   env['PYTHON_ROOT'] = pdir
+   if sys.platform.startswith('win'):
+      env['PYTHON_CPPPATH'] = "%s/Include %s/PC" % (pdir, pdir)
+      env['PYTHON_LIBPATH'] = "%s/PCbuild" % pdir
+   elif sys.platform.startswith('linux'):
+      env['PYTHON_CPPPATH'] = "%s %s/Include" % (pdir, pdir)
+      env['PYTHON_LIBPATH'] = "%s" % pdir
+
+
+def setPythonQtEnv(env, pdir):
+   """ Set PythonQt related environment settings in the env. """
+   env['PYTHONQT_ROOT'] = pdir
+   env['PYTHONQT_CPPPATH'] = "%s/src %s/extensions/PythonQt_QtAll" % (pdir, pdir)
+   env['PYTHONQT_LIBPATH'] = "%s/lib" % pdir
+
+
+def setQwtEnv(env, pdir):
+   """ Set Qwt related environment settings in the env. """
+   env['QWT_ROOT'] = pdir
+   env['QWT_CPPPATH'] = "%s/src" % pdir
+   env['QWT_LIBPATH'] = "%s/lib" % pdir
+   
 
 def setTCfwkEnv(env, pdir):
    """ Set TC-fwk related environment settings in the env. """
@@ -205,9 +233,9 @@ def setupEnvironment(env):
    if platform == 'win32':
       if 'cl' in env['CC']:
          if env['build_mode'] == 'dbg':
-            env.MergeFlags('-MTd -W1 -D_DEBUG -RTCs -Zi')
+            env.MergeFlags('-MDd -W1 -D_DEBUG -RTCs -Zi')
          else:
-            env.MergeFlags('-MT -O1 -DNDEBUG')
+            env.MergeFlags('-MD -O1 -DNDEBUG')
          if env['verbose']:
             env.AppendUnique(CCFLAGS='-Bt')
             env.AppendUnique(LINKFLAGS=['-verbose:lib', '-time'])
